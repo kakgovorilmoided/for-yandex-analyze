@@ -19,14 +19,16 @@ def proverka(a, b):
 
 
 def tochnaya_proverka(a, b):
-    b[0] = b[0].replace('"', '')
-    b[-1]=b[-1].replace('"','')
-
-    if len(a) != len(b):
+    b1 = []
+    for x in b:
+        b1.append(x)
+    b1[0] = b1[0].replace('"', '')
+    b1[-1] = b1[-1].replace('"','')
+    if len(a) != len(b1):
         return 0
     else:
-        for x in b:
-            if x in a:
+        for elem in b1:
+            if elem in a:
                 continue
             else:
                 return 0

@@ -18,20 +18,21 @@ def proverka(a, b):
         return 1
 
 def tochnaya_proverka(a, b):
-    b[0] = b[0].replace('"', '')
-    b[-1] = b[-1].replace('"','')
-
-    if len(a) != len(b):
-        return 0
-    else:
-        for x in b:
+    b1=b
+    b1[0] = b1[0].replace('"', '')
+    b1[-1] = b1[-1].replace('"','')
+    if (len(a)-len(b1)) == 0:
+        print('dlina')
+        for x in b1:
             if x in a:
                 continue
             else:
                 return 0
         return 1
+    else:
+        return 0
 
-a=[['работа','яндекс','такси','nice'],['яндекс','работа','такси']]
+a=[['работа','яндекс','такси','nice'],['яндекс','работа','такси','Курган']]
 b=[['"работа','яндекс','такси"'],['работа','яндекс','такси']]
 
 b_saved=[]
@@ -40,18 +41,18 @@ for x in b:
 
 def analyze(srch, smnt):
     list_tmp = []
-    for k in range(len(srch)):
+    for x in srch:
         for i in range(len(smnt)):
-            tmp = proverka(srch[k], smnt[i])
-            if tmp == 0:
+            print(proverka(x,smnt[i]))
+            if proverka(x, smnt[i]) == 0:
+                print('ne vyshlo ', i)
                 continue
             else:
                 list_tmp.append(b_saved[i])
-                print('complete ', k, ' from all')
                 break
         else:
             list_tmp.append('Unknown')
-            print('complete ', k, ' from all')
+    print('done')
     return list_tmp
 
 print(analyze(a,b))
