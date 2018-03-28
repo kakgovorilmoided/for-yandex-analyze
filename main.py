@@ -8,6 +8,8 @@ import pymorphy2
 def proverka(a, b):
     if '"' in b[0]:
         return tochnaya_proverka(a, b)
+    if '[' in b[0]:
+        return kvadrat_proverka(a, b)
     else:
         for x in b:
             if x in a:
@@ -15,6 +17,30 @@ def proverka(a, b):
             else:
                 return 0
         return 1
+
+def kvadrat_proverka(a, b):
+    b1 = []
+    tmp = []
+    for x in b:
+        b1.append(x)
+    b1[0] = b1[0].replace('[', '')
+    b1[-2] = b1[-2].replace(']','')
+    if b1[-1] in a:
+        for i in range(len(b1) - 1):
+            if b1[i] in a:
+                tmp.append(b1[i])
+            else:
+                return 0
+        b1.remove(b1[-1])
+        for i in range(len(tmp)):
+            if tmp[i] != b1[i]:
+                return 0
+        else:
+            return 1
+    else:
+        return 0
+
+
 
 
 
@@ -46,7 +72,7 @@ searches = [] #our searches as list
 
 #Считываем
 
-df1 = pd.read_csv('semantic.csv', encoding='utf-8')
+df1 = pd.read_csv('semantic1.csv', encoding='utf-8')
 strings = df1['keyword_name:'].values
 for row in strings:
     semantic.append(row)
@@ -57,7 +83,7 @@ strings = df2['searches'].values
 for row in strings:
     searches.append(row)
 
-semantic_saved=[]
+semantic_saved = []  #Сохраняем семантику, чтобы потом вставлять её в файл
 for x in semantic:
     semantic_saved.append(x)
 
@@ -65,18 +91,23 @@ for x in semantic:
 
 for i in range(len(semantic)):
     semantic[i] = semantic[i].split()
+    tmp=[]
     for j in range(len(semantic[i])):
-        semantic[i][j] = normed_word(semantic[i][j])
+        if semantic[i][j][0] == '-':
+            tmp.append(semantic[i][j])
+        else:
+            semantic[i][j] = normed_word(semantic[i][j])
+    for x in tmp:
+        semantic[i].remove(x)
 print('---------!semantic parsed!---------')
 
-print(semantic)
 
 for i in range(len(searches)):
+    tmp=[]
     searches[i] = searches[i].split()
     for j in range(len(searches[i])):
         searches[i][j] = normed_word(searches[i][j])
 print('---------!searches parsed!---------')
-print(searches)
 
 
 #Analyzing
@@ -91,14 +122,15 @@ def analyze(srch,smnt):
                 continue
             else:
                 list_tmp.append(semantic_saved[i])
-                print('complete ', k,' from all')
+                if k%1000 == 0:
+                    print('complete ', k,' from all')
                 break
         else:
             list_tmp.append('Unknown')
-            print('complete ', k, ' from all')
+            if k%1000 == 0:
+                print('complete ', k, ' from all')
     return list_tmp
 
 
 df2['predictions'] = analyze(searches, semantic)
-
-df2.to_csv('result.csv')
+df2.to_csv('result_active_searches1.csv')
