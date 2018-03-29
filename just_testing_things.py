@@ -22,7 +22,6 @@ def proverka(a, b):
 
 
 def kvadrat_proverka(a, b):
-    print('yeas')
     b1 = []
     tmp = []
     for x in b:

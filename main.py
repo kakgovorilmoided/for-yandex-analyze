@@ -72,7 +72,7 @@ searches = [] #our searches as list
 
 #Считываем
 
-df1 = pd.read_csv('semantic1.csv', encoding='utf-8')
+df1 = pd.read_csv('semantic.csv', encoding='utf-8')
 strings = df1['keyword_name:'].values
 for row in strings:
     semantic.append(row)
@@ -95,6 +95,8 @@ for i in range(len(semantic)):
     for j in range(len(semantic[i])):
         if semantic[i][j][0] == '-':
             tmp.append(semantic[i][j])
+        elif semantic[i][j][0] == '+':
+            semantic[i][j] = normed_word(semantic[i][j].replace('+',''))
         else:
             semantic[i][j] = normed_word(semantic[i][j])
     for x in tmp:
@@ -133,4 +135,4 @@ def analyze(srch,smnt):
 
 
 df2['predictions'] = analyze(searches, semantic)
-df2.to_csv('result_active_searches1.csv')
+df2.to_csv('result_active_searches_old_semantic.csv')
