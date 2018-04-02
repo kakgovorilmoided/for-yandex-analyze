@@ -1,6 +1,7 @@
 from v2 import functions as func, KeyClasses
 import csv
-
+import traceback
+from v2 import logger
 
 keys = func.read_from_csv('../semantic_new.csv', 'keyword_name:')
 # keys = func.read_from_csv('../searches.csv', 'Ключевик')
@@ -13,9 +14,12 @@ csv_data = list(csv.reader(open('../searches.csv', encoding='utf-8')))
 
 for p in range(len(phrases3d)):
     for key in keys_classes:
-        result = key.analyse(phrases3d[p])
-        if result:
-            csv_data[p+1][2] = key.base_key
+        try:
+            result = key.analyse(phrases3d[p])
+            if result:
+                csv_data[p + 1][2] = key.base_key
+        except:
+            logger.log(traceback.format_exc())
 
 writer = csv.writer(open("../output.csv", 'w',  encoding='utf-8'))
 writer.writerows(csv_data)
